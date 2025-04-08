@@ -4,6 +4,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Thunder Bot</title>
   <style>
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       margin: 0;
       background: url('file_0000000075c05230b849534380e45365_conversation_id=67f45565-0950-8011-a83d-03165d6b553c&message_id=66fa4040-3bef-40e4-a446-45bc79d22882.png') no-repeat center center fixed;
@@ -13,9 +17,10 @@
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
-      height: 100vh;
-      overflow: hidden;
+      min-height: 100vh;
+      overflow-y: auto;
     }
+
     .banner {
       background-color: white;
       border: 3px solid black;
@@ -24,8 +29,13 @@
       padding: 10px 0;
       font-size: 2rem;
       font-weight: bold;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
     }
-    .text-container {
+
+    .text-container,
+    .merch-container {
       margin-top: 20px;
       width: 90%;
       max-width: 400px;
@@ -35,17 +45,11 @@
       padding: 20px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     }
+
     .merch-container {
-      margin-top: 20px;
-      width: 90%;
-      max-width: 400px;
-      background-color: rgba(255, 255, 255, 0.95);
-      border: 2px solid black;
-      border-radius: 10px;
-      padding: 20px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
       text-align: center;
     }
+
     .merch-container img {
       width: 100%;
       max-height: 250px;
@@ -53,15 +57,18 @@
       border-radius: 10px;
       margin-bottom: 10px;
     }
+
     .merch-title {
       font-size: 1.5rem;
       font-weight: bold;
       margin-bottom: 5px;
     }
+
     .merch-price {
       font-size: 1.25rem;
       margin-bottom: 15px;
     }
+
     .buy-button {
       background-color: black;
       color: white;
@@ -72,7 +79,27 @@
       cursor: pointer;
       transition: background 0.3s ease;
     }
+
     .buy-button:hover {
+      background-color: #444;
+    }
+
+    #scrollTopBtn {
+      display: none;
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      z-index: 999;
+      font-size: 18px;
+      padding: 10px 15px;
+      background-color: black;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #scrollTopBtn:hover {
       background-color: #444;
     }
   </style>
@@ -97,5 +124,23 @@
     <button class="buy-button" onclick="window.location.href='https://yourstore.com/buy-now-link'">Buy Now</button>
   </div>
 
+  <button onclick="scrollToTop()" id="scrollTopBtn">Top</button>
+
+  <script>
+    // Scroll to Top Button
+    const scrollTopBtn = document.getElementById("scrollTopBtn");
+
+    window.onscroll = function () {
+      if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+        scrollTopBtn.style.display = "block";
+      } else {
+        scrollTopBtn.style.display = "none";
+      }
+    };
+
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
 </body>
 </html>

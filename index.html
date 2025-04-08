@@ -15,39 +15,87 @@
       justify-content: flex-start;
       height: 100vh;
       overflow: hidden;
-    }.banner {
-  background-color: white;
-  border: 3px solid black;
-  text-align: center;
-  width: 100%;
-  padding: 10px 0;
-  font-size: 2rem;
-  font-weight: bold;
-}
-
-.text-container {
-  margin-top: 20px;
-  width: 90%;
-  max-width: 400px;
-  background-color: rgba(255, 255, 255, 0.9);
-  border: 2px solid black;
-  border-radius: 10px;
-  padding: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
+    }
+    .banner {
+      background-color: white;
+      border: 3px solid black;
+      text-align: center;
+      width: 100%;
+      padding: 10px 0;
+      font-size: 2rem;
+      font-weight: bold;
+    }
+    .text-container {
+      margin-top: 20px;
+      width: 90%;
+      max-width: 400px;
+      background-color: rgba(255, 255, 255, 0.9);
+      border: 2px solid black;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+    .merch-container {
+      margin-top: 20px;
+      width: 90%;
+      max-width: 400px;
+      background-color: rgba(255, 255, 255, 0.95);
+      border: 2px solid black;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      text-align: center;
+    }
+    .merch-container img {
+      width: 100%;
+      max-height: 250px;
+      object-fit: contain;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+    .merch-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .merch-price {
+      font-size: 1.25rem;
+      margin-bottom: 15px;
+    }
+    .buy-button {
+      background-color: black;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      font-size: 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .buy-button:hover {
+      background-color: #444;
+    }
   </style>
 </head>
 <body>
   <div class="banner">THUNDER BOT</div>
+
   <div class="text-container">
     <p style="font-size: 1.5rem; font-weight: bold;">About Thunder Bot</p>
     <p>Thunder Bot is a towering, lightning-powered robot with bold yellow and black stripes, glowing eyes, and a heart as big as his steel frame. Brought to life by a freak lightning storm in a scientist’s lab, he’s strong, curious, and always ready to help. Though his appearance is powerful and imposing, Thunder Bot is gentle and kind, especially with kids. He doesn’t speak, but he communicates through expressive gestures, protective actions, and heroic deeds that show he’s more than just a machine—he’s a true friend and guardian to the town.</p>
 
-<p style="font-size: 1.5rem; font-weight: bold;">Issues</p>
+    <p style="font-size: 1.5rem; font-weight: bold;">Issues</p>
     <ul>
       <li style="font-size: 1.25rem;"><a href="no1.html">Issue No. 1</a></li>
     </ul>
   </div>
+
+  <div class="merch-container">
+    <img src="your-product-image.jpg" alt="Thunder Bot T-Shirt">
+    <div class="merch-title">Thunder Bot T-Shirt</div>
+    <div class="merch-price">$19.99</div>
+    <button class="buy-button" onclick="window.location.href='https://yourstore.com/buy-now-link'">Buy Now</button>
+  </div>
+
 </body>
 </html>

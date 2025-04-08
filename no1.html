@@ -10,12 +10,9 @@
       background: url('file_0000000075c05230b849534380e45365_conversation_id=67f45565-0950-8011-a83d-03165d6b553c&message_id=66fa4040-3bef-40e4-a446-45bc79d22882.png') no-repeat center center fixed;
       background-size: cover;
       font-family: sans-serif;
+      height: 100vh;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      height: 100vh;
-      overflow: hidden;
     }
 
     .banner {
@@ -26,15 +23,20 @@
       padding: 10px 0;
       font-size: 2rem;
       font-weight: bold;
+      flex-shrink: 0;
+    }
+
+    .main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .video-container {
-      margin-top: 10px;
       width: 100%;
       max-width: 400px;
       aspect-ratio: 9 / 16;
-      display: flex;
-      justify-content: center;
     }
 
     iframe {
@@ -47,9 +49,10 @@
 </head>
 <body>
   <div class="banner">THUNDER BOT</div>
-  <div class="video-container">
-    <iframe src="https://player.vimeo.com/video/1073421324" allowfullscreen></iframe>
-<p style="text-align: center;"><a href="index.html">Go Back</a></p>
+  <div class="main">
+    <div class="video-container">
+      <iframe src="https://player.vimeo.com/video/1073421324" allowfullscreen></iframe>
+    </div>
   </div>
 </body>
 </html>

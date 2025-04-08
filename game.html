@@ -72,4 +72,140 @@
   </style>
 </head>
 <body>
-  <div class="banner">THUNDER BOT</
+  <div class="banner">THUNDER BOT</div>
+  <div class="main">
+    <div class="game-container">
+      <canvas id="gameCanvas" width="400" height="712"></canvas>
+    </div>
+    <div class="mobile-controls">
+      <button id="jumpButton">Jump</button>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Load game images
+    const thunderBotImg = new Image();
+    thunderBotImg.src = 'file_00000000852851f7b5d81f31c1440ca8_conversation_id=67f45565-0950-8011-a83d-03165d6b553c&message_id=c09043e1-b7bc-4135-9721-5d642c0dbb4f.png';
+
+    const fireballImg = new Image();
+    fireballImg.src = 'file_000000005ebc52309b8f46beb074f9c8_conversation_id=67f45565-0950-8011-a83d-03165d6b553c&message_id=dc450914-4e69-407c-bce1-be1d6225ce95~2.png';
+
+    const backgroundImg = new Image();
+    backgroundImg.src = 'file_00000000ac1c523098e44af7e1714093_conversation_id=67f45565-0950-8011-a83d-03165d6b553c&message_id=32679a26-2b4d-44d0-ae9e-5af8e3d8d11f.png';
+
+    // Define a roadOffset so that Thunder Bot and obstacles align with the road in the background.
+    const roadOffset = 60; // Adjust this value as needed.
+
+    // Set Thunder Bot's position so it's on the road.
+    let botX = 50;
+    let botY = canvas.height - 80 - roadOffset; // 80 is botHeight; position above the road
+    const botWidth = 60;
+    const botHeight = 80;
+    let velocityY = 0;
+    const gravity = 0.5;
+    let isJumping = false;
+    const jumpStrength = -14;  // Higher jump
+
+    // Obstacles (using fireball image) positioned relative to the road.
+    const obstacles = [];
+    const obstacleWidth = 50;
+    const obstacleHeight = 50;
+    let obstacleSpeed = 4;
+    let frameCount = 0;
+
+    // Control listeners
+    document.addEventListener('keydown', (e) => {
+      if ((e.code === 'Space' || e.code === 'ArrowUp') && !isJumping) {
+        isJumping = true;
+        velocityY = jumpStrength;
+      }
+    });
+
+    document.getElementById('jumpButton').addEventListener('click', () => {
+      if (!isJumping) {
+        isJumping = true;
+        velocityY = jumpStrength;
+      }
+    });
+
+    function update() {
+      botY += velocityY;
+      velocityY += gravity;
+
+      // Reset Thunder Bot position when it lands on the road.
+      if (botY > canvas.height - botHeight - roadOffset) {
+        botY = canvas.height - botHeight - roadOffset;
+        velocityY = 0;
+        isJumping = false;
+      }
+
+      frameCount++;
+      // Spawn obstacles at the road level.
+      if (frameCount % 120 === 0) {
+        const obstacleY = canvas.height - obstacleHeight - roadOffset;
+        obstacles.push({ x: canvas.width, y: obstacleY });
+      }
+
+      // Update obstacle positions.
+      for (let i = 0; i < obstacles.length; i++) {
+        obstacles[i].x -= obstacleSpeed;
+      }
+
+      // Remove off-screen obstacles.
+      while (obstacles.length && obstacles[0].x + obstacleWidth < 0) {
+        obstacles.shift();
+      }
+
+      // Collision detection.
+      for (let i = 0; i < obstacles.length; i++) {
+        const obs = obstacles[i];
+        if (
+          botX < obs.x + obstacleWidth &&
+          botX + botWidth > obs.x &&
+          botY < obs.y + obstacleHeight &&
+          botY + botHeight > obs.y
+        ) {
+          alert('Ouch! Thunder Bot crashed! Refresh to try again.');
+          document.location.reload();
+        }
+      }
+    }
+
+    function draw() {
+      // Draw the static background.
+      ctx.drawImage(backgroundImg, 0, 0, canvas.width, canvas.height);
+
+      // Draw Thunder Bot.
+      ctx.drawImage(thunderBotImg, botX, botY, botWidth, botHeight);
+
+      // Draw fireball obstacles.
+      obstacles.forEach(obs => {
+        ctx.drawImage(fireballImg, obs.x, obs.y, obstacleWidth, obstacleHeight);
+      });
+    }
+
+    function gameLoop() {
+      update();
+      draw();
+      requestAnimationFrame(gameLoop);
+    }
+
+    // Use a counter to start the game loop once all images are loaded.
+    let imagesLoaded = 0;
+    const totalImages = 3;
+    function imageLoaded() {
+      imagesLoaded++;
+      if (imagesLoaded === totalImages) {
+        gameLoop();
+      }
+    }
+
+    backgroundImg.onload = imageLoaded;
+    thunderBotImg.onload = imageLoaded;
+    fireballImg.onload = imageLoaded;
+  </script>
+</body>
+</html>

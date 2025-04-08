@@ -68,6 +68,38 @@
         display: block;
       }
     }
+    
+    /* Modal styling */
+    #modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 10;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      align-items: center;
+      justify-content: center;
+    }
+    
+    #modal .modal-content {
+      background: #fff;
+      border: 2px solid #000;
+      padding: 20px;
+      text-align: center;
+    }
+    
+    #modal button {
+      font-size: 1.5rem;
+      margin-top: 10px;
+      padding: 10px 20px;
+      border: none;
+      background-color: #444;
+      color: #fff;
+      cursor: pointer;
+      border-radius: 5px;
+    }
   </style>
 </head>
 <body>
@@ -81,83 +113,101 @@
     </div>
   </div>
   
+  <!-- Modal for game over -->
+  <div id="modal">
+    <div class="modal-content">
+      <p style="font-size:1.5rem;">Ouch! Thunder Bot crashed! Click below to restart.</p>
+      <button id="restartButton">Restart</button>
+    </div>
+  </div>
+  
   <script>
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
-  
+    
     // Load game images
     const thunderBotImg = new Image();
     thunderBotImg.src = 'file_00000000852851f7b5d81f31c1440ca8_conversation_id=67f45565-0950-8011-a83d-03165d6b553c&message_id=c09043e1-b7bc-4135-9721-5d642c0dbb4f.png';
-  
+    
     const fireballImg = new Image();
     fireballImg.src = 'fireball_transparent.png';
-  
+    
     const backgroundImg = new Image();
     backgroundImg.src = 'file_00000000ac1c523098e44af7e1714093_conversation_id=67f45565-0950-8011-a83d-03165d6b553c&message_id=32679a26-2b4d-44d0-ae9e-5af8e3d8d11f.png';
-  
-    // Define a roadOffset to align characters with the road in the background
-    const roadOffset = 60; // Adjust as needed.
-  
-    // Update Thunder Bot's properties (doubling its size)
+    
+    // Define a roadOffset to align elements with the road in the background.
+    const roadOffset = 60;
+    
+    // Update Thunder Bot's properties (doubled size from previous update, adjust as needed)
     let botX = 50;
-    const botWidth = 120;  // Doubled from 60
-    const botHeight = 160; // Doubled from 80
+    const botWidth = 120;
+    const botHeight = 160;
     let botY = canvas.height - botHeight - roadOffset;
     let velocityY = 0;
     const gravity = 0.5;
     let isJumping = false;
-    const jumpStrength = -20;  // Higher jump
-  
-    // Update obstacle properties (doubling its size)
+    let jumpStrength = -14;  // Modify this value to adjust jump height if desired.
+    
+    // Update obstacle properties (doubled size)
     const obstacles = [];
-    const obstacleWidth = 100;  // Doubled from 50
-    const obstacleHeight = 100; // Doubled from 50
-    let obstacleSpeed = 4;
+    const obstacleWidth = 100;
+    const obstacleHeight = 100;
+    let obstacleSpeed = 3;
     let frameCount = 0;
-  
+    
+    // Variable to check for game over
+    let gameOver = false;
+    
     // Keyboard input
     document.addEventListener('keydown', (e) => {
-      if ((e.code === 'Space' || e.code === 'ArrowUp') && !isJumping) {
+      if ((e.code === 'Space' || e.code === 'ArrowUp') && !isJumping && !gameOver) {
         isJumping = true;
         velocityY = jumpStrength;
       }
     });
-  
+    
     document.getElementById('jumpButton').addEventListener('click', () => {
-      if (!isJumping) {
+      if (!isJumping && !gameOver) {
         isJumping = true;
         velocityY = jumpStrength;
       }
     });
-  
+    
+    // Restart button in modal
+    document.getElementById('restartButton').addEventListener('click', () => {
+      location.reload(); // Simple page refresh to restart the game
+    });
+    
     function update() {
+      if (gameOver) return; // Stop updating if game is over
+      
       botY += velocityY;
       velocityY += gravity;
-  
-      // Ensure Thunder Bot lands on the road
+    
+      // Ensure Thunder Bot lands on the road.
       if (botY > canvas.height - botHeight - roadOffset) {
         botY = canvas.height - botHeight - roadOffset;
         velocityY = 0;
         isJumping = false;
       }
-  
+    
       frameCount++;
       // Spawn obstacles at the road level
       if (frameCount % 120 === 0) {
         const obstacleY = canvas.height - obstacleHeight - roadOffset;
         obstacles.push({ x: canvas.width, y: obstacleY });
       }
-  
+    
       // Update obstacle positions
       for (let i = 0; i < obstacles.length; i++) {
         obstacles[i].x -= obstacleSpeed;
       }
-  
+    
       // Remove off-screen obstacles
       while (obstacles.length && obstacles[0].x + obstacleWidth < 0) {
         obstacles.shift();
       }
-  
+    
       // Collision detection
       for (let i = 0; i < obstacles.length; i++) {
         const obs = obstacles[i];
@@ -167,32 +217,36 @@
           botY < obs.y + obstacleHeight &&
           botY + botHeight > obs.y
         ) {
-          alert('Ouch! Thunder Bot crashed! Refresh to try again.');
-          document.location.reload();
+          // Trigger game over
+          gameOver = true;
+          showModal();
+          return;
         }
       }
     }
-  
+    
     function draw() {
       // Draw static background
       ctx.drawImage(backgroundImg, 0, 0, canvas.width, canvas.height);
-  
+    
       // Draw Thunder Bot
       ctx.drawImage(thunderBotImg, botX, botY, botWidth, botHeight);
-  
+    
       // Draw fireball obstacles
       obstacles.forEach(obs => {
         ctx.drawImage(fireballImg, obs.x, obs.y, obstacleWidth, obstacleHeight);
       });
     }
-  
+    
     function gameLoop() {
       update();
       draw();
-      requestAnimationFrame(gameLoop);
+      if (!gameOver) {
+        requestAnimationFrame(gameLoop);
+      }
     }
-  
-    // Start game once all images have loaded
+    
+    // Start game once all images have loaded.
     let imagesLoaded = 0;
     const totalImages = 3;
     function imageLoaded() {
@@ -201,10 +255,15 @@
         gameLoop();
       }
     }
-  
+    
     backgroundImg.onload = imageLoaded;
     thunderBotImg.onload = imageLoaded;
     fireballImg.onload = imageLoaded;
+    
+    // Show the modal when game over.
+    function showModal() {
+      document.getElementById('modal').style.display = 'flex';
+    }
   </script>
 </body>
 </html>

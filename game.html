@@ -34,19 +34,21 @@
       justify-content: center;
     }
 
-.game-container {
-  width: 100%;
-  max-width: 400px;
-  height: 712px; /* Add this */
-  position: relative;
-}
+    .game-container {
+      width: 100%;
+      max-width: 400px;
+      height: 712px; /* Explicit height */
+      position: relative;
+      border: 2px dashed red; /* Debugging border to verify container is visible */
+    }
 
-#gameCanvas {
-  width: 100%;
-  height: 100%;
-  background-color: transparent;
-  display: block;
-}
+    #gameCanvas {
+      width: 100%;
+      height: 100%;
+      border-radius: 10px;
+      display: block;
+      background-color: #fff; /* temporary background for visibility */
+    }
 
     .mobile-controls {
       display: none;
@@ -85,6 +87,7 @@
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
 
+    // Load game images
     const thunderBotImg = new Image();
     thunderBotImg.src = 'file_00000000852851f7b5d81f31c1440ca8_conversation_id=67f45565-0950-8011-a83d-03165d6b553c&message_id=c09043e1-b7bc-4135-9721-5d642c0dbb4f.png';
 
@@ -94,6 +97,7 @@
     const backgroundImg = new Image();
     backgroundImg.src = 'file_00000000ac1c523098e44af7e1714093_conversation_id=67f45565-0950-8011-a83d-03165d6b553c&message_id=32679a26-2b4d-44d0-ae9e-5af8e3d8d11f.png';
 
+    // Thunder Bot properties and game variables
     let botX = 50;
     let botY = 500;
     const botWidth = 60;
@@ -101,7 +105,7 @@
     let velocityY = 0;
     const gravity = 0.5;
     let isJumping = false;
-    const jumpStrength = -14;  // Higher jump
+    const jumpStrength = -14; // Higher jump
 
     const obstacles = [];
     const obstacleWidth = 50;
@@ -109,6 +113,7 @@
     let obstacleSpeed = 4;
     let frameCount = 0;
 
+    // Event listeners for controls
     document.addEventListener('keydown', (e) => {
       if ((e.code === 'Space' || e.code === 'ArrowUp') && !isJumping) {
         isJumping = true;
@@ -123,6 +128,7 @@
       }
     });
 
+    // Update game state
     function update() {
       botY += velocityY;
       velocityY += gravity;
@@ -147,6 +153,7 @@
         obstacles.shift();
       }
 
+      // Collision detection
       for (let i = 0; i < obstacles.length; i++) {
         const obs = obstacles[i];
         if (
@@ -162,7 +169,7 @@
     }
 
     function draw() {
-      // Draw static background
+      // Draw the static background
       ctx.drawImage(backgroundImg, 0, 0, canvas.width, canvas.height);
 
       // Draw Thunder Bot
@@ -180,13 +187,19 @@
       requestAnimationFrame(gameLoop);
     }
 
-    backgroundImg.onload = () => {
-      thunderBotImg.onload = () => {
-        fireballImg.onload = () => {
-          gameLoop();
-        }
+    // Simplified onload logic: Count images as they load and start the game when all are ready.
+    let imagesLoaded = 0;
+    const totalImages = 3;
+    function imageLoaded() {
+      imagesLoaded++;
+      if (imagesLoaded === totalImages) {
+        gameLoop();
       }
-    };
+    }
+
+    backgroundImg.onload = imageLoaded;
+    thunderBotImg.onload = imageLoaded;
+    fireballImg.onload = imageLoaded;
   </script>
 </body>
 </html>

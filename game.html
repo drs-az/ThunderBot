@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Thunder Bot</title>
+  <style>
+    body {
+      margin: 0;
+      background: url('file_0000000075c05230b849534380e45365_conversation_id=67f45565-0950-8011-a83d-03165d6b553c&message_id=66fa4040-3bef-40e4-a446-45bc79d22882.png') no-repeat center center fixed;
+      background-size: cover;
+      font-family: sans-serif;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .banner {
+      background-color: white;
+      border: 3px solid black;
+      text-align: center;
+      width: 100%;
+      padding: 10px 0;
+      font-size: 2rem;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .game-container {
+      width: 100%;
+      max-width: 400px;
+      aspect-ratio: 9 / 16;
+      position: relative;
+    }
+
+    #gameCanvas {
+      width: 100%;
+      height: 100%;
+      background: #eef;
+      border-radius: 10px;
+      display: block;
+    }
+
+    /* Mobile controls container is hidden by default */
+    .mobile-controls {
+      display: none;
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    .mobile-controls button {
+      font-size: 1.5rem;
+      padding: 10px 20px;
+      border: 2px solid black;
+      background-color: white;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    /* Show mobile controls only on small screens */
+    @media (max-width: 768px) {
+      .mobile-controls {
+        display: block;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="banner">THUNDER BOT</div>
+  <div class="main">
+    <div class="game-container">
+      <canvas id="gameCanvas" width="400" height="712"></canvas>
+    </div>
+    <div class="mobile-controls">
+      <button id="jumpButton">Jump</button>
+    </div>
+  </div>
+
+  <script>
+    // Get canvas and context
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Load Thunder Bot sprite (ensure thunder-bot.png is available in your project directory)
+    const thunderBotImg = new Image();
+    thunderBotImg.src = 'thunder-bot.png';
+
+    // Game variables for Thunder Bot
+    let botX = 50;
+    let botY = 500;
+    const botWidth = 60;
+    const botHeight = 80;
+    let velocityY = 0;
+    const gravity = 0.5;
+    let isJumping = false;
+    const jumpStrength = -10;
+
+    // Obstacles (for the infinite runner)
+    const obstacles = [];
+    const obstacleWidth = 50;
+    const obstacleHeight = 50;
+    let obstacleSpeed = 4;
+    let frameCount = 0;
+
+    // Handle keyboard input for desktop users
+    document.addEventListener('keydown', (e) => {
+      if ((e.code === 'Space' || e.code === 'ArrowUp') && !isJumping) {
+        isJumping = true;
+        velocityY = jumpStrength;
+      }
+    });
+
+    // Mobile controls: attach event listener to the jump button
+    const jumpButton = document.getElementById('jumpButton');
+    jumpButton.addEventListener('click', () => {
+      if (!isJumping) {
+        isJumping = true;
+        velocityY = jumpStrength;
+      }
+    });
+
+    function update() {
+      // Apply gravity
+      botY += velocityY;
+      velocityY += gravity;
+
+      // Floor collision
+      if (botY > canvas.height - botHeight) {
+        botY = canvas.height - botHeight;
+        velocityY = 0;
+        isJumping = false;
+      }
+
+      // Spawn obstacles every 120 frames
+      frameCount++;
+      if (frameCount % 120 === 0) { 
+        const obstacleY = canvas.height - obstacleHeight;
+        obstacles.push({ x: canvas.width, y: obstacleY });
+      }
+
+      // Update obstacle positions
+      for (let i = 0; i < obstacles.length; i++) {
+        obstacles[i].x -= obstacleSpeed;
+      }
+
+      // Remove obstacles that have moved off-screen
+      while (obstacles.length && obstacles[0].x + obstacleWidth < 0) {
+        obstacles.shift();
+      }
+
+      // Check for collisions (simple bounding box check)
+      for (let i = 0; i < obstacles.length; i++) {
+        const obs = obstacles[i];
+        if (
+          botX < obs.x + obstacleWidth &&
+          botX + botWidth > obs.x &&
+          botY < obs.y + obstacleHeight &&
+          botY + botHeight > obs.y
+        ) {
+          alert('Ouch! Thunder Bot crashed! Refresh to try again.');
+          document.location.reload();
+        }
+      }
+    }
+
+    function draw() {
+      // Clear the canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw Thunder Bot sprite
+      ctx.drawImage(thunderBotImg, botX, botY, botWidth, botHeight);
+
+      // Draw obstacles
+      ctx.fillStyle = 'brown';
+      obstacles.forEach(obs => {
+        ctx.fillRect(obs.x, obs.y, obstacleWidth, obstacleHeight);
+      });
+    }
+
+    function gameLoop() {
+      update();
+      draw();
+      requestAnimationFrame(gameLoop);
+    }
+
+    // Start the game loop once the sprite image loads
+    thunderBotImg.onload = () => {
+      gameLoop();
+    };
+  </script>
+</body>
+</html>

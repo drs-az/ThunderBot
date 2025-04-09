@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -102,6 +103,23 @@
     #scrollTopBtn:hover {
       background-color: #444;
     }
+
+    /* New CSS for the Issues container */
+    .issues-container {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin-top: 10px;
+      margin-bottom: 20px;
+    }
+
+    .issue-item img {
+      width: 100%;
+      height: auto;
+      border: 2px solid black;
+      border-radius: 10px;
+      object-fit: cover;
+    }
   </style>
 </head>
 <body>
@@ -112,20 +130,20 @@
     <p>Thunder Bot is a towering, lightning-powered robot with bold yellow and black stripes, glowing eyes, and a heart as big as his steel frame. Brought to life by a freak lightning storm in a scientist’s lab, he’s strong, curious, and always ready to help. Though his appearance is powerful and imposing, Thunder Bot is gentle and kind, especially with kids. He doesn’t speak, but he communicates through expressive gestures, protective actions, and heroic deeds that show he’s more than just a machine—he’s a true friend and guardian to the town.</p>
 
     <p style="font-size: 1.5rem; font-weight: bold;">Issues</p>
-    <ul>
-      <li style="font-size: 1.25rem;"><a href="no1.html">Issue No. 1</a></li>
-    </ul>
+    <div class="issues-container">
+      <div class="issue-item">
+        <a href="no1.html">
+          <img src="issue1.png" alt="Issue No. 1 Cover" />
+        </a>
+      </div>
+      <div class="issue-item">
+        <a href="no2.html">
+          <img src="issue2.png" alt="Issue No. 2 Cover" />
+        </a>
+      </div>
+      <!-- Add additional issue items as needed -->
+    </div>
   </div>
-
- <!--
- <div class="merch-container">
-    <img src="file_00000000a0b051f798892234d7d3ad89_conversation_id=67f45565-0950-8011-a83d-03165d6b553c&message_id=b7983379-096d-4b15-bc71-5c14b70fa4db.png" alt="Thunder Bot T-Shirt">
-    <div class="merch-title">Thunder Bot T-Shirt</div>
-    <div class="merch-price">$19.99</div>
-    <button class="buy-button" onclick="window.location.href='https://yourstore.com/buy-now-link'">Buy Now</button>
-  </div>
-  --!>
-
 
   <div class="merch-container">
     <img src="file_00000000f2f05230b391f40f95ada206_conversation_id=67f45565-0950-8011-a83d-03165d6b553c&message_id=c0e69015-a056-41d8-a6bd-7b4c0b490a46.png" alt="Thunder Bot Coloring Book">
@@ -141,7 +159,7 @@
     <button class="buy-button" onclick="window.location.href='game.html'">Play Now</button>
   </div>
 
-<br/><br/>
+  <br/><br/>
   <button onclick="scrollToTop()" id="scrollTopBtn">Top</button>
 
   <script>
